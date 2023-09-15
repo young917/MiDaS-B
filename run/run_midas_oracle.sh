@@ -36,7 +36,9 @@ do
     done
 done
 
+cd analyze/
+python evaluation_table.py --search_name midas_oracle --repeat "1,2,3"
 # run `analyze/GridSearch.ipynb`
-cd results/
+cd ../results/
 xargs -a midas_oracle/search_result.txt cp -r -t midas_oracle/
 
