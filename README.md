@@ -4,9 +4,9 @@
 We extends our previous paper: [MiDaS: Representative Sampling from Real-world Hypergraphs](https://arxiv.org/abs/2202.01587) for back-in-time hypergraph sampling. 
 *Back-in-time hypergraph sampling* is to accurately approximate a past snapshot of a given size of the input large hypergraph. 
 Unlike representative sampling, we do not have access to the target (i.e., the past snapshot of a given size). 
-To tackle this challenge, we propose MiDaS-B, an extension of MiDaS, capable of accurately approximating the past snapshot of the input hypergraph, without relying on the ground-truth past snapshot information.
+To tackle this challenge, we propose MiDaS-B, an extension of MiDaS specifically designed for back-in-time hypergraph sampling. 
 
-We provide source code for (1) sampling hypergraphs, and (2) evaluating the quality of sub-hypergraph for this back-in-time hypergraph sampling problem.
+We provide source code for (1) sampling hypergraphs, and (2) evaluating the quality of sub-hypergraphs for this back-in-time hypergraph sampling problem.
 
 
 (1) **Sampling Hypergraphs**
@@ -27,7 +27,7 @@ Measure how precisely the sub-hypergraph preserves the structural properties of 
 
 ## Datasets
 
-In the papaer, we used datasets after removing duplicated hyperedges. We preprocessed eleven datasets collected by [Austin R. Benson](https://www.cs.cornell.edu/~arb/data/). The datasets used in the paper are available in the "dataset" folder.
+In the paper, we used datasets after removing duplicated hyperedges. We preprocessed eleven datasets collected by [Austin R. Benson](https://www.cs.cornell.edu/~arb/data/). The datasets used in the paper are available in the ["dataset" folder](https://github.com/young917/MiDaS/tree/main/dataset).
 
 - - -
 
