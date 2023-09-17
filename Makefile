@@ -28,7 +28,7 @@ OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
 CFLAGS := -c
 #INC := -I /usr/local/include -I $(BOOSTDIR)/include
 #LIB := -L /usr/local/lib -L $(BOOSTDIR)/lib -lboost_program_options
-INC := -I /usr/local/include -I /usr/include/python3.8/ -I /home/lib/python3.8/site-packages/
+INC := -I /usr/local/include -I /usr/include/python3.8/ -I /lib/python3.8/site-packages/
 LIB := -L /usr/local/lib -lcrypt -lpthread -ldl -lutil -lrt -lm -lm -lpython3.8
 
 ifeq ($(UNAME_S),Linux)
