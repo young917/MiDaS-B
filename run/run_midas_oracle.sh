@@ -11,14 +11,8 @@ do
         do
             # Sampling
             ./bin/Sampling --dataname ${data} --inputpath ../dataset/ --algorithm es --algo_opt add_global_deg_min --alpha ${alpha} --repeat ${repeat_index}
-            # Score
-            ./bin/Sampling --dataname ${data} --inputpath ../dataset/ --algorithm helper --inputdir es/add_global_deg_min_${alpha} --algo_opt "intersection,densification,sizewcc" --accuracy 500 --repeat ${repeat_index}
-            cd src
-            python calculation_avg_helper.py --dataset $data --algorithm es/add_global_deg_min_${alpha} --size --repeat ${repeat_index} --accuracy 500
-            python score_function.py --dataset ${data} --datasetdir ../dataset/ --algorithm es/add_global_deg_min_${alpha} --repeat ${repeat_index} --accuracy 500
-            cd ..  
             # Evaluation
-            ./bin/Sampling --dataname ${data} --inputpath ../dataset/ --algorithm helper --inputdir es/add_global_deg_min_${alpha} --algo_opt "clusteringcoef" --accuracy 100 --repeat ${repeat_index}
+            ./bin/Sampling --dataname ${data} --inputpath ../dataset/ --algorithm helper --inputdir es/add_global_deg_min_${alpha} --algo_opt "intersection,densification,sizewcc,clusteringcoef" --accuracy 100 --repeat ${repeat_index}
             cd src
             python calculation_helper.py --dataset ${data} --algorithm es/add_global_deg_min_${alpha} --effdiam --overlapness --repeat ${repeat_index} --accuracy 100
             cd ..
@@ -38,7 +32,7 @@ done
 
 cd analyze/
 python evaluation_table.py --search_name midas_oracle --repeat "1,2,3"
-# run `analyze/GridSearch.ipynb`
+python GridSearch.py --search_name midas_oracle
 cd ../results/
 xargs -a midas_oracle/search_result.txt cp -r -t midas_oracle/
 

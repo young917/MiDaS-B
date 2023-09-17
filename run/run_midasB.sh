@@ -4,6 +4,17 @@ alphaset=("0.00" "0.25" "0.50" "1.00" "2.00")
 betaset=("-1.00" "-0.50" "-0.25" "0.00" "0.25" "0.50" "1.00")
 
 cd ../
+# # RHS for score
+for repeat_index in 1 2 3
+do
+    for data in ${dataset[@]}
+    do
+        
+        ./bin/Sampling --dataname ${data} --inputpath ../dataset/ --algorithm es --algo_opt add_global_deg_min --alpha 0.0000 --repeat ${repeat_index}
+        ./bin/Sampling --dataname ${data} --inputpath ../dataset/ --algorithm helper --inputdir es/add_global_deg_min_0.0000 --algo_opt "intersection,densification,sizewcc" --accuracy 500 --repeat ${repeat_index}
+        python calculation_avg_helper.py --dataset $data --algorithm es/add_global_deg_min_0.0000 --size --repeat ${repeat_index} --accuracy 500
+    done
+done
 for repeat_index in 1 2 3
 do
     for data in ${dataset[@]}
@@ -26,8 +37,11 @@ do
 done
 
 # Find best one based on score
-# run `analyze/BestScoreSearch_midasB.ipynb`
-cd results/
+cd ./analyze/
+python BestScoreSearch_midasB.py
+cd ..
+
+cd ./results/
 xargs -a midasB/search_result.txt cp -r -t midasB/
 
 # Evaluation
@@ -42,9 +56,11 @@ do
         for sp in ${spset[@]}
         do
             ./bin/Sampling --dataname ${data} --inputpath ../dataset/ --algorithm helperdist --inputdir midasB  --samplingportion ${sp} --repeat ${repeat_index}
+            
             # For threads-ask-ubuntu, coauth-MAG-Geology-full, and coauth-MAG-History-full, 
             # run  `src/preprocess_sv.py --dataname ${data} --midasB --repeat_str ${repeat_index}` 
             # and then run `run_sv_midasB.m` before the next line
+            
             cd src
             python calculation_helper.py --dataset ${data} --algorithm midasB --svdist --samplingportion ${sp} --repeat ${repeat_index}
             cd ..

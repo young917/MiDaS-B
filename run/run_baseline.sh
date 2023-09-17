@@ -1,8 +1,11 @@
-dataset=("email-Enron-full" "email-Eu-full" "contact-high-school" "contact-primary-school" "NDC-classes-full" "NDC-substances-full" "tags-ask-ubuntu" "tags-math-sx" "threads-ask-ubuntu" "coauth-MAG-Geology-full" "coauth-MAG-History-full")
+# dataset=("email-Enron-full" "email-Eu-full" "contact-high-school" "contact-primary-school" "NDC-classes-full" "NDC-substances-full" "tags-ask-ubuntu" "tags-math-sx" "threads-ask-ubuntu" "coauth-MAG-Geology-full" "coauth-MAG-History-full")
 spset=("0.1" "0.3" "0.5" "0.7" "0.9")
 
+dataset=("email-Eu-full" "contact-primary-school" "NDC-substances-full" "tags-ask-ubuntu") # "coauth-MAG-History-full")
+
 cd ../
-for repeat_index in 1 2 3
+# for repeat_index in 1 2 3
+for repeat_index in 1
 do
     for data in ${dataset[@]}
     do
@@ -40,9 +43,11 @@ do
             ./bin/Sampling --dataname ${data} --inputpath ../dataset/ --algorithm helperdist --inputdir ns/add_ordered --samplingportion ${sp} --repeat ${repeat_index}
             ./bin/Sampling --dataname ${data} --inputpath ../dataset/ --algorithm helperdist --inputdir es/add_global_deg_min_0.0000  --samplingportion ${sp} --repeat ${repeat_index}
             ./bin/Sampling --dataname ${data} --inputpath ../dataset/ --algorithm helperdist --inputdir tihs --samplingportion ${sp} --repeat ${repeat_index}
+            
             # For threads-ask-ubuntu, coauth-MAG-Geology-full, and coauth-MAG-History-full, 
             # run `src/preprocess_sv.py --repeat_str ${repeat_index} --dataname ${data}`
             # and then run `run_sv_base.m` before the next line
+            
             cd src
             python calculation_helper.py --dataset ${data} --algorithm ns/add_global_deg_0.0000 --svdist --samplingportion ${sp} --repeat ${repeat_index}
             python calculation_helper.py --dataset ${data} --algorithm ns/add_global_deg_1.0000 --svdist --samplingportion ${sp} --repeat ${repeat_index}

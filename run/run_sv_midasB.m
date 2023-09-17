@@ -8,7 +8,7 @@ for repeatname={"1", "2", "3"};
                 continue;
             end;
             fileID2 = fopen('input/midasB/' + dataname{1} +  '/' + repeatname{1} + '/icd_col_' + portion_str{1} + '.txt','r');
-            fileID3 = fopen('input/midasB/' + repeatname{1} + '/dim_' + portion_str{1} + '.txt','r');
+            fileID3 = fopen('input/midasB/' + dataname{1} +  '/' + repeatname{1} + '/dim_' + portion_str{1} + '.txt','r');
             formatSpec = '%f';
             R = fscanf(fileID, formatSpec);                       
             C = fscanf(fileID2, formatSpec);

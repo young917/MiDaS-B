@@ -1,5 +1,6 @@
 dataset=("email-Enron-full" "email-Eu-full" "contact-high-school" "contact-primary-school" "NDC-classes-full" "NDC-substances-full" "tags-ask-ubuntu" "tags-math-sx" "threads-ask-ubuntu" "coauth-MAG-Geology-full" "coauth-MAG-History-full")
 spset=("0.1" "0.3" "0.5" "0.7" "0.9")
+
 alphaset=("0.00" "0.25" "0.50" "1.00" "2.00")
 betaset=("-1.00" "-0.50" "-0.25" "0.00" "0.25" "0.50" "1.00")
 
@@ -14,14 +15,8 @@ do
             do
                 # Sampling
                 ./bin/Sampling --dataname ${data} --inputpath ../dataset/ --algorithm essz --algo_opt add_global_deg_min --alpha ${alpha} --beta ${beta} --repeat ${repeat_index}
-                # Score
-                ./bin/Sampling --dataname ${data} --inputpath ../dataset/ --algorithm helper --inputdir essz/add_global_deg_min_${alpha}_${beta} --algo_opt "intersection,densification,sizewcc" --accuracy 500 --repeat ${repeat_index}
-                cd src
-                python calculation_avg_helper.py --dataset $data --algorithm essz/add_global_deg_min_${alpha}_${beta} --size --repeat ${repeat_index} --accuracy 500
-                python score_function.py --dataset ${data} --datasetdir ../dataset/ --algorithm essz/add_global_deg_min_${alpha}_${beta} --repeat ${repeat_index} --accuracy 500
-                cd ..  
                 # Evaluation
-                ./bin/Sampling --dataname ${data} --inputpath ../dataset/ --algorithm helper --inputdir essz/add_global_deg_min_${alpha}_${beta} --algo_opt "clusteringcoef" --accuracy 100 --repeat ${repeat_index}
+                ./bin/Sampling --dataname ${data} --inputpath ../dataset/ --algorithm helper --inputdir essz/add_global_deg_min_${alpha}_${beta} --algo_opt "intersection,densification,sizewcc,clusteringcoef" --accuracy 100 --repeat ${repeat_index}
                 cd src
                 python calculation_helper.py --dataset ${data} --algorithm essz/add_global_deg_min_${alpha}_${beta} --effdiam --overlapness --repeat ${repeat_index} --accuracy 100
                 cd ..
@@ -42,6 +37,6 @@ done
 
 cd analyze/
 python evaluation_table.py --search_name midasB_oracle --repeat "1,2,3"
-# run `analyze/GridSearch.ipynb`
-cd results/
+python GridSearch.py --search_name midasB_oracle
+cd ../results/
 xargs -a midasB_oracle/search_result.txt cp -r -t midasB_oracle/

@@ -12,9 +12,9 @@ do
             # Sampling
             ./bin/Sampling --dataname ${data} --inputpath ../dataset/ --algorithm es --algo_opt add_global_deg_min --alpha ${alpha} --repeat ${repeat_index}
             # Score
-            ./bin/Sampling --dataname ${data} --inputpath ../dataset/ --algorithm helper --inputdir es/add_global_deg_min_${alpha} --algo_opt "intersection,densification,sizewcc" --accuracy 500 --repeat ${repeat_index}
+            ./bin/Sampling --dataname ${data} --inputpath ../dataset/ --algorithm helper --inputdir es/add_global_deg_min_${alpha} --algo_opt "intersection,densification,sizewcc" --accuracy 500 --repeat ${repeat_index} --recalculate
             cd src
-            python calculation_avg_helper.py --dataset $data --algorithm es/add_global_deg_min_${alpha} --size --repeat ${repeat_index} --accuracy 500
+            python calculation_avg_helper.py --dataset $data --algorithm es/add_global_deg_min_${alpha} --size --repeat ${repeat_index} --accuracy 500 --recalculate
             python score_function.py --dataset ${data} --datasetdir ../dataset/ --algorithm es/add_global_deg_min_${alpha} --repeat ${repeat_index} --accuracy 500
             cd ..  
         done
@@ -22,11 +22,14 @@ do
 done
 
 # Find best one based on score
-# run `analyze/BestScoreSearch_midas.ipynb`
-cd results/
+cd ./analyze/
+python BestScoreSearch_midas.py
+cd ..
+
+cd ./results/
 xargs -a midas/search_result.txt cp -r -t midas/
 
-# Evaluation
+# # Evaluation
 for repeat_index in 1 2 3
 do
     for data in ${dataset[@]}
@@ -38,9 +41,11 @@ do
         for sp in ${spset[@]}
         do
             ./bin/Sampling --dataname ${data} --inputpath ../dataset/ --algorithm helperdist --inputdir midas  --samplingportion ${sp} --repeat ${repeat_index}
+            
             # For threads-ask-ubuntu, coauth-MAG-Geology-full, and coauth-MAG-History-full, 
             # run  `src/preprocess_sv.py --dataname ${data} --algoname midas --repeat_str ${repeat_index}` 
             # and then run `run_sv_midas.m` before the next line
+            
             cd src
             python calculation_helper.py --dataset ${data} --algorithm midas --svdist --samplingportion ${sp} --repeat ${repeat_index}
             cd ..
