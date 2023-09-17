@@ -106,7 +106,7 @@ inline bool file_exist (const std::string& name) {
 }
 
 inline string make_directory (vector<string> args){
-    string outputdir = "/home/MiDaS-B/results/";
+    string outputdir = "/home/dmlab/minyoung/BackInTime_Sampling_cpp/results/";
     for (int i = 0 ; i < (int)args.size() ; i++){
         outputdir += args[i] + "/";
         mkdir(outputdir.c_str(), 0776);

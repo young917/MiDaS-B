@@ -93,8 +93,15 @@ int main(int argc, char* argv[]){
             final = NULL;
         }
         else{
+            auto start = std::chrono::steady_clock::now();
             AlgorithmNS *algo = new AlgorithmNS(alpha, outputdir, algo_opt, graph);
             final = algo->run(accuracy);
+            auto end = std::chrono::steady_clock::now();
+            const auto runtime =  std::chrono::duration_cast<chrono::milliseconds>(end - start);
+            string TimeOutputname = outputdir + "time.txt";
+            ofstream TimeOutput(TimeOutputname.c_str());
+            TimeOutput << to_string(runtime.count()) << " ms" << endl;
+            TimeOutput.close();
             free(algo);
             algo = NULL;
         }
@@ -117,8 +124,15 @@ int main(int argc, char* argv[]){
             final = NULL;
         }
         else{
+            auto start = std::chrono::steady_clock::now();
             AlgorithmESSZ *algo = new AlgorithmESSZ(outputdir, algo_opt, alpha, beta, graph);
             final = algo->run(accuracy);
+            auto end = std::chrono::steady_clock::now();
+            const auto runtime =  std::chrono::duration_cast<chrono::milliseconds>(end - start);
+            string TimeOutputname = outputdir + "time.txt";
+            ofstream TimeOutput(TimeOutputname.c_str());
+            TimeOutput << to_string(runtime.count()) << " ms" << endl;
+            TimeOutput.close();
             free(algo);
             algo = NULL;
         }
@@ -138,8 +152,15 @@ int main(int argc, char* argv[]){
             final = NULL;
         }
         else{
+            auto start = std::chrono::steady_clock::now();
             AlgorithmES *algo = new AlgorithmES(outputdir, algo_opt, alpha, graph);
             final = algo->run(accuracy);
+            auto end = std::chrono::steady_clock::now();
+            const auto runtime =  std::chrono::duration_cast<chrono::milliseconds>(end - start);
+            string TimeOutputname = outputdir + "time.txt";
+            ofstream TimeOutput(TimeOutputname.c_str());
+            TimeOutput << to_string(runtime.count()) << " ms" << endl;
+            TimeOutput.close();
             free(algo);
             algo = NULL;
         }
@@ -164,8 +185,15 @@ int main(int argc, char* argv[]){
             final = NULL;
         }
         else{
+            auto start = std::chrono::steady_clock::now();
             Algorithm_FF *algo = new Algorithm_FF(p, q, algo_opt, outputdir, graph);
             final = algo->run(accuracy);
+            auto end = std::chrono::steady_clock::now();
+            const auto runtime =  std::chrono::duration_cast<chrono::milliseconds>(end - start);
+            string TimeOutputname = outputdir + "time.txt";
+            ofstream TimeOutput(TimeOutputname.c_str());
+            TimeOutput << to_string(runtime.count()) << " ms" << endl;
+            TimeOutput.close();
             free(algo);
             algo = NULL;
         }
@@ -189,8 +217,15 @@ int main(int argc, char* argv[]){
             final = NULL;
         }
         else{
+            auto start = std::chrono::steady_clock::now();
             Algorithm_RW *algo = new Algorithm_RW(algo_opt, outputdir, graph, restart, maxlength, noinduce); 
             final = algo->run(accuracy);
+            auto end = std::chrono::steady_clock::now();
+            const auto runtime =  std::chrono::duration_cast<chrono::milliseconds>(end - start);
+            string TimeOutputname = outputdir + "time.txt";
+            ofstream TimeOutput(TimeOutputname.c_str());
+            TimeOutput << to_string(runtime.count()) << " ms" << endl;
+            TimeOutput.close();
             free(algo);
             algo = NULL;
         }
@@ -203,8 +238,16 @@ int main(int argc, char* argv[]){
             final = NULL;
         }
         else{
+            auto start = std::chrono::steady_clock::now();
             Algorithm_TIHS *algo = new Algorithm_TIHS(outputdir, graph); 
             final = algo->run(accuracy);
+            auto end = std::chrono::steady_clock::now();
+            const auto runtime = std::chrono::duration_cast<chrono::milliseconds>(end - start);
+            // ((double)(end - start) / CLOCKS_PER_SEC)
+            string TimeOutputname = outputdir + "time.txt";
+            ofstream TimeOutput(TimeOutputname.c_str());
+            TimeOutput << to_string(runtime.count()) << " ms" << endl;
+            TimeOutput.close();
             free(algo);
             algo = NULL;
         }
@@ -375,27 +418,24 @@ int main(int argc, char* argv[]){
             set<int> init_set;
             Helper *algo = new Helper(init_set, graph, outputdir, algo_opt);
             cout << "Start Add" << endl;
-            clock_t start = clock();
+            auto start = std::chrono::steady_clock::now();
             for (int hi = 0; hi < graph->number_of_hedges ; hi++){
                 int h = hyperedges[hi];
                 init_set.insert(h);
                 num_hedges++;
                 if (( (num_hedges > 0) && (num_hedges % unit_numhedge == 0)) || (num_hedges == graph->number_of_hedges)){
                     int idx = (int)floor(num_hedges / unit_numhedge);
-                    if ((idx % 10) == 0){
-                        cout << "[" << idx << "]" << endl;
-                        // cout << to_string((int)algo->neighbor.size()) << endl;
-                        if (answer_flag){
-                            clock_t end = clock();
-                            double runtime =  ((double)(end - start) / CLOCKS_PER_SEC) / 60;
-                            cout << "Time(min) = " << to_string(runtime) << endl;
-                        }
-                    }
                     algo->update(init_set, graph);
                     algo->save_properties();
                     init_set.clear();
                 }
-            }
+            }    
+            auto end = std::chrono::steady_clock::now();
+            const auto runtime =  std::chrono::duration_cast<chrono::milliseconds>(end - start);
+            string TimeOutputname = outputdir + "time_property.txt";
+            ofstream TimeOutput(TimeOutputname.c_str());
+            TimeOutput << to_string(runtime.count()) << " ms" << endl;
+            TimeOutput.close();
         }
     }
     cout << "End Sampling" << endl;

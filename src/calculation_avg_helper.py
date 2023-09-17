@@ -14,7 +14,7 @@ import powerlaw
 import math
 import time
 
-RESULTDIR = "/home/MiDaS-B/results/"
+RESULTDIR = "/home/dmlab/minyoung/BackInTime_Sampling_cpp"
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataset', required=False, default="email-Enron-full")
@@ -158,6 +158,7 @@ if args.size:
         step = 0
         sumsize = 0
 
+        start_time = time.process_time()
         with open(inputpath, "r") as f:
             for line in f.readlines():
                 line = line[:-1]
@@ -173,6 +174,9 @@ if args.size:
 
                     with open(outputdir + "size_avg.txt", "+a") as f:
                         f.write(str(number_of_edges) + "," + str(avgsize) + "\n")
+        end_time = time.process_time()
+        with open(outputdir + "time_size_avg.txt", "w") as f:
+            f.write("{} ms\n".format(int(round((end_time - start_time) * 1000))))
         print("End Size Avg")
 
 # pairdegree ------------------------------------------------------------------------------

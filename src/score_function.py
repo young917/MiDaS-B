@@ -39,7 +39,7 @@ def read_dist(algoname, dataname, evalname, repeat="2", accuracy=500):
 
 def fenalty_score(algoname, dataname, repeat="2", accuracy=500):
     # ESRandom
-    compare_repeat_index = repeat
+    compare_repeat_index = np.random.choice([1,2,3])
     esrandom_dsf = read_dist("es/add_global_deg_min_0.0000", dataname, "densification", compare_repeat_index, accuracy)
     esrandom_wcc = read_dist("es/add_global_deg_min_0.0000", dataname, "sizewcc", compare_repeat_index, accuracy)
 

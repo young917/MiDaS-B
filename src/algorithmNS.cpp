@@ -193,6 +193,14 @@ HSet* AlgorithmNS::run(double accuracy){
     // resultFile << to_string(sampled->timespent) << endl;
     // resultFile.close();
 
+    string TimeOutputname = outputdir + "time_sampling_portion.txt";
+    if (file_exist(TimeOutputname)){
+        remove(TimeOutputname.c_str());
+    }
+    auto start_sampling_time = std::chrono::steady_clock::now();
+    int unit_numhedge = (int)ceil((double)graph->number_of_hedges / 10.0);
+
+
     // Initiate
     HSet *sampled;
     set<int> initial_state;    
@@ -213,6 +221,7 @@ HSet* AlgorithmNS::run(double accuracy){
     
     // Sample Nodes
     int iter = 0;
+    vector<int> tmp;
     while(iter < graph->number_of_hedges){
         if ((int)pool.size() > 0){
             pool.clear();
@@ -234,7 +243,19 @@ HSet* AlgorithmNS::run(double accuracy){
         }
         if ((int)pool.size() > 0){
             if (addflag){
-                sampled->update(pool, graph, "+");
+                // sampled->update(pool, graph, "+");
+                for (int pi=0 ; pi < (int)pool.size() ; pi++){
+                    tmp.push_back(pool[pi]);
+                    sampled->update(tmp, graph, "+");
+                    if ((sampled->number_of_hedges % unit_numhedge == 0) || (sampled->number_of_hedges == graph->number_of_hedges)){
+                        auto end_sampling_time = std::chrono::steady_clock::now();
+                        const auto runtime =  std::chrono::duration_cast<chrono::milliseconds>(end_sampling_time - start_sampling_time);
+                        ofstream TimeOutput(TimeOutputname.c_str(), std::ios::app | std::ios::out);
+                        TimeOutput << to_string(runtime.count()) << " ms\n";
+                        TimeOutput.close();
+                    }
+                    tmp.clear();
+                }
             }
             else{
                 sampled->update(pool, graph, "-");

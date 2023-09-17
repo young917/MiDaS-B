@@ -117,7 +117,6 @@ int AlgorithmESSZ::sample_hedge(void){
             continue;
         }
         double random_double = dist(gen);
-        cout << to_string(random_double) << endl;
         assert ((hedge_tree[2 * idx] + hedge_tree[2 * idx + 1]) > 0.0);
         double prob = (double)hedge_tree[2 * idx] / (hedge_tree[2 * idx] + hedge_tree[2 * idx + 1]);
         if (random_double < prob) idx = 2 * idx;

@@ -99,6 +99,13 @@ HSet* Algorithm_RW::run(double accuracy){
     else{
         max_length = givenmaxlength * graph->number_of_nodes;
     }
+
+    string TimeOutputname = outputdir + "time_sampling_portion.txt";
+    if (file_exist(TimeOutputname)){
+        remove(TimeOutputname.c_str());
+    }
+    auto start_sampling_time = std::chrono::steady_clock::now();
+    int unit_numhedge = (int)ceil((double)graph->number_of_hedges / 10.0);
     
     set<int> initial_state;
     HSet *sampled = new HSet(initial_state, graph, outputdir, accuracy, "");
@@ -108,9 +115,8 @@ HSet* Algorithm_RW::run(double accuracy){
     for (int h = 0 ; h < graph->number_of_hedges ; h++){
         htable[h] = (int)graph->hyperedge2node[h].size();
     }
-    auto end = chrono::steady_clock::now();
-    sampled->timespent = std::chrono::duration_cast<chrono::milliseconds>(end - start).count();
     
+    vector<int> tmp2;
     while(sampled->number_of_hedges < graph->number_of_hedges){
         cout << "\r" << to_string(sampled->number_of_hedges) << "/" << to_string(graph->number_of_hedges);
         start = chrono::steady_clock::now();
@@ -136,26 +142,24 @@ HSet* Algorithm_RW::run(double accuracy){
             }
         }
         walk(seed, max_length);
-        end = chrono::steady_clock::now();
-        sampled->timespent += std::chrono::duration_cast<chrono::milliseconds>(end - start).count();
         if ((int)pool.size() > 0){
-            sampled->update(pool, graph, "+");
+            // sampled->update(pool, graph, "+");
+            for (int pi=0 ; pi < (int)pool.size() ; pi++){
+                tmp2.push_back(pool[pi]);
+                sampled->update(tmp2, graph, "+");
+                if ((sampled->number_of_hedges % unit_numhedge == 0) || (sampled->number_of_hedges == graph->number_of_hedges)){
+                    auto end_sampling_time = std::chrono::steady_clock::now();
+                    const auto runtime =  std::chrono::duration_cast<chrono::milliseconds>(end_sampling_time - start_sampling_time);
+                    ofstream TimeOutput(TimeOutputname.c_str(), std::ios::app | std::ios::out);
+                    TimeOutput << to_string(runtime.count()) << " ms\n";
+                    TimeOutput.close();
+                }
+                tmp2.clear();
+            }
         }
-
-        // if (sampled->number_of_nodes < 10){
-        //     continue;
-        // }
-        // else if (((double)sampled->number_of_nodes / graph->number_of_nodes) > thr){
-        //     thr += 1.0 / accuracy;
-        //     sampled->save_properties(graph);
-        // }
     }
     cout << endl;
     sampled->save_as_txt(graph);
-    string writeFile = outputdir + "time.txt";
-    ofstream resultFile(writeFile.c_str());
-    resultFile << to_string(sampled->timespent) << endl;
-    resultFile.close();
 
     return sampled;
 }

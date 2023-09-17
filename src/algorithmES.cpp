@@ -181,6 +181,13 @@ HSet* AlgorithmES::run(double accuracy){
     cout << "Algorithm Option = " << algo_opt << endl;
     cout << "Alpha = " << to_string(alpha) << endl;
     
+    string TimeOutputname = outputdir + "time_sampling_portion.txt";
+    if (file_exist(TimeOutputname)){
+        remove(TimeOutputname.c_str());
+    }
+    auto start_sampling_time = std::chrono::steady_clock::now();
+    int unit_numhedge = (int)ceil((double)graph->number_of_hedges / 10.0);
+
     HSet *sampled;
     set<int> initial_state;
     initiate();
@@ -209,6 +216,13 @@ HSet* AlgorithmES::run(double accuracy){
             sampled->update(pool, graph, "-");
         }
         iter ++;
+        if ((iter % unit_numhedge == 0) || (iter == graph->number_of_hedges)){
+            auto end_sampling_time = std::chrono::steady_clock::now();
+            const auto runtime =  std::chrono::duration_cast<chrono::milliseconds>(end_sampling_time - start_sampling_time);
+            ofstream TimeOutput(TimeOutputname.c_str(), std::ios::app | std::ios::out);
+            TimeOutput << to_string(runtime.count()) << " ms\n";
+            TimeOutput.close();
+        }
     }
     cout << "Done Sampling" << endl;
     sampled->save_as_txt(graph);

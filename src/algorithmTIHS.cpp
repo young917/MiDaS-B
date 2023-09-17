@@ -23,7 +23,13 @@ HSet* Algorithm_TIHS::run(double accuracy){
     std::mt19937 gen(rd());
     // double thr = 1.0 / accuracy;
 
-    auto start = chrono::steady_clock::now();
+    string TimeOutputname = outputdir + "time_sampling_portion.txt";
+    if (file_exist(TimeOutputname)){
+        remove(TimeOutputname.c_str());
+    }
+    auto start_sampling_time = std::chrono::steady_clock::now();
+    int unit_numhedge = (int)ceil((double)graph->number_of_hedges / 10.0);
+
     // initialize
     set<int> initial_state;
     HSet *sampled = new HSet(initial_state, graph, outputdir, accuracy, "");
@@ -35,11 +41,8 @@ HSet* Algorithm_TIHS::run(double accuracy){
     for(int h = 0 ; h < graph->number_of_hedges ; h++){
         check_hyperedge[h] = (int)graph->hyperedge2node[h].size();
     }
-    auto end = chrono::steady_clock::now();
-    sampled->timespent = std::chrono::duration_cast<chrono::milliseconds>(end - start).count();
-    
+    vector<int> tmp;
     while(sampled->number_of_hedges < graph->number_of_hedges){
-        start = chrono::steady_clock::now();
         if ((int)pool.size() > 0){
             pool.clear();
         }
@@ -57,35 +60,29 @@ HSet* Algorithm_TIHS::run(double accuracy){
                     int h_p = graph->node2hyperedge[v][j];
                     check_hyperedge[h_p] -= 1;
                     if (check_hyperedge[h_p] == 0){
-                        // cout << "check h_p" << endl;
                         if (h_p != h){
                             pool.push_back(h_p);
                         }
-                        // cout << "insert into pool" << endl;
                         hedge_check[h_p] = true;
                     }
                 }
                 check_node[v] = true;
             }
         }
-        end = chrono::steady_clock::now();
-        sampled->timespent += std::chrono::duration_cast<chrono::milliseconds>(end - start).count();
-        // cout << "update" << endl;
-
-        sampled->update(pool, graph, "+");
-        if (sampled->number_of_nodes < 10){
-            continue;
+        for (int pi=0 ; pi < (int)pool.size() ; pi++){
+            tmp.push_back(pool[pi]);
+            sampled->update(tmp, graph, "+");
+            if ((sampled->number_of_hedges % unit_numhedge == 0) || (sampled->number_of_hedges == graph->number_of_hedges)){
+                auto end_sampling_time = std::chrono::steady_clock::now();
+                const auto runtime =  std::chrono::duration_cast<chrono::milliseconds>(end_sampling_time - start_sampling_time);
+                ofstream TimeOutput(TimeOutputname.c_str(), std::ios::app | std::ios::out );
+                TimeOutput << to_string(runtime.count()) << " ms\n";
+                TimeOutput.close();
+            }
+            tmp.clear();
         }
-        // else if (((double)sampled->number_of_nodes / graph->number_of_nodes) > thr){
-        //     thr += 1.0 / accuracy;
-        //     sampled->save_properties(graph);
-        // }
     }
     sampled->save_as_txt(graph);
-    string writeFile = outputdir + "time.txt";
-    ofstream resultFile(writeFile.c_str());
-    resultFile <<  to_string(sampled->timespent) << endl;
-    resultFile.close();
-
+    
     return sampled;
 }

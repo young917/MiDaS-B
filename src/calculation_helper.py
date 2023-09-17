@@ -62,8 +62,6 @@ def find_svs(dataname, inputpath, outputdir, recalculate_flag, samplingportion, 
                     line = line[:-1]
                     s.append(float(line))
                     
-            # if (dataname in exceptdatas) is False and len(s) < dim: # Error -> Recalculate
-            #     flag = True
             if len(s) < dim:
                 flag = True
             else:
@@ -77,9 +75,6 @@ def find_svs(dataname, inputpath, outputdir, recalculate_flag, samplingportion, 
             assert len(s) == 300, len(s)
             flag = False
             dim = 300
-    # elif (recalculate_flag is False) and (dataname in exceptdatas):
-    #     print("no singular value file", outputpath)
-    #     flag = False
         
     # Calculate Singular Values
     if (flag): 
@@ -94,17 +89,15 @@ def find_svs(dataname, inputpath, outputdir, recalculate_flag, samplingportion, 
             assert len(s) == dim
             for i in range(1,dim):
                 assert s[i-1] >= s[i]
-            # assert math.fabs(sum_of_squares - np.sum(np.array(s) ** 2)) < 0.000001
             with open(outputpath, "w") as f:
                 for _sv in s:
                     f.write(str(_sv) + "\n")
         except:
-            # print("[" + inputpath + "] Error #V=" + str(number_of_nodes) + ", #E=" + str(number_of_edges))
             rows, cols = zip(*chain.from_iterable([[(v, edge_idx) for edge_idx in node2edges[v]] for v in node2edges.keys()]))
             nnz = len(rows)
             incident_matrix = coo_matrix((np.ones(nnz), (rows, cols)), shape=(number_of_nodes, number_of_edges))
             sum_of_squares = norm(incident_matrix, 'fro') ** 2
-            rank = min(num , dim - 1)
+            rank = dim - 1
             _, s, _ = svds(incident_matrix.tocsc(), k=rank)
             last_sv_square = sum_of_squares - sum([_s * _s for _s in s])
             last_sv = math.sqrt(last_sv_square)
@@ -139,7 +132,7 @@ def sv_dist(_list_sv, dim, answer_max_portion):
 
 # ----------------------------------------------------------------------------------------------
 
-RESULTDIR = "/home/MiDaS-B/results/"
+RESULTDIR = "/home//dmlab/minyoung/BackInTime_Sampling_cpp/results/"
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataset', required=False, default="email-Enron-full")

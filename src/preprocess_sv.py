@@ -95,37 +95,35 @@ if __name__ == "__main__":
     
     for dataname in dataset:
         for portion_str in portion_list:
-            inputpath = "../../dataset/" + dataname + ".txt"
-            outputdir = "../analyze_sv/input/answer/" + dataname + "/"
-            portion = float(portion_str)
-            if os.path.isdir(outputdir) is False:
-                os.makedirs(outputdir)
-            
-            if (args.recalculate is False) and (os.path.isfile("../results/answer/" + dataname + "/singular_values_full_%.1f.txt" % (portion))):
-                #(os.path.isfile("../Hypergraph_Sampling_cpp/results/answer_dist/" + dataname + "/singular_values_full.txt")):
-                shutil.rmtree(outputdir)
-            else:    
-                later_outputdir = "../analyze_sv/input/answer/" + dataname + "/"
-                if os.path.isdir(later_outputdir) is False:
-                    os.makedirs(later_outputdir)
-                answer_s = find_incidence_mat(inputpath, outputdir, portion)
-
-            for algoname in tqdm(sampled_algo_list, desc=dataname + " " + portion_str):        
-                for repeat_str in repeat_list:
-                    inputpath = "../results/" + algoname + "/" + dataname + "/" + repeat_str + "/sampled_graph.txt"
-                    outputdir = "../analyze_sv/input/" + algoname + "/" + dataname  + "/" + repeat_str + "/"
+            for algoname in tqdm(sampled_algo_list, desc=dataname + " " + portion_str):
+                portion = float(portion_str)
+                if algoname == "answer":
+                    inputpath = "../../dataset/" + dataname + ".txt"
+                    outputdir = "../analyze_sv/input/answer/" + dataname + "/"
+                    
                     if os.path.isdir(outputdir) is False:
                         os.makedirs(outputdir)
-                    if (args.recalculate is False) and (os.path.isfile("../analyze_sv/output/" + algoname + "/" + dataname + "/" + repeat_str + "/singular_values_full_%.1f.txt" % (portion))):
-                        #(os.path.isfile("../Hypergraph_Sampling_cpp/results/" + algoname + "/" + dataname + "_" + portion_str  + "/" + repeat_str + "/singular_values_full.txt")):
+                    
+                    if (args.recalculate is False) and (os.path.isfile("../results/answer/" + dataname + "/singular_values_full_%.1f.txt" % (portion))):
+                        #(os.path.isfile("../Hypergraph_Sampling_cpp/results/answer_dist/" + dataname + "/singular_values_full.txt")):
                         shutil.rmtree(outputdir)
                     else:    
-                        later_outputdir = "../analyze_sv/output/" + algoname + "/" + dataname + "/" + repeat_str + "/"
+                        later_outputdir = "../analyze_sv/output/answer/" + dataname + "/"
                         if os.path.isdir(later_outputdir) is False:
                             os.makedirs(later_outputdir)
-                        data_s = find_incidence_mat(inputpath, outputdir, portion)
-    
-    # for dataname in dataset:
-    #     # for dataname in dataset:
-    #     inputpath = "../dataset/" + dataname + ".txt"
-    #     answer_s = find_incidence_mat(inputpath)
+                        answer_s = find_incidence_mat(inputpath, outputdir, portion)
+                else:                    
+                    for repeat_str in repeat_list:
+                        inputpath = "../results/" + algoname + "/" + dataname + "/" + repeat_str + "/sampled_graph.txt"
+                        outputdir = "../analyze_sv/input/" + algoname + "/" + dataname  + "/" + repeat_str + "/"
+                        if os.path.isdir(outputdir) is False:
+                            os.makedirs(outputdir)
+                        if (args.recalculate is False) and (os.path.isfile("../analyze_sv/output/" + algoname + "/" + dataname + "/" + repeat_str + "/singular_values_full_%.1f.txt" % (portion))):
+                            #(os.path.isfile("../Hypergraph_Sampling_cpp/results/" + algoname + "/" + dataname + "_" + portion_str  + "/" + repeat_str + "/singular_values_full.txt")):
+                            shutil.rmtree(outputdir)
+                        else:    
+                            later_outputdir = "../analyze_sv/output/" + algoname + "/" + dataname + "/" + repeat_str + "/"
+                            if os.path.isdir(later_outputdir) is False:
+                                os.makedirs(later_outputdir)
+                            data_s = find_incidence_mat(inputpath, outputdir, portion)
+                            
