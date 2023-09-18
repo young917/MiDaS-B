@@ -4,128 +4,88 @@
 We extends our previous paper: [MiDaS: Representative Sampling from Real-world Hypergraphs](https://arxiv.org/abs/2202.01587) for back-in-time hypergraph sampling. 
 *Back-in-time hypergraph sampling* is to accurately approximate a past snapshot of a given size of the input large hypergraph. 
 Unlike representative sampling, we do not have access to the target (i.e., the past snapshot of a given size). 
-To tackle this challenge, we propose MiDaS-B, an extension of MiDaS specifically designed for back-in-time hypergraph sampling. 
+To tackle this challenge, we propose **MiDaS-B**, an extension of MiDaS specifically designed for back-in-time hypergraph sampling. 
 
-We provide source code for (1) sampling hypergraphs, and (2) evaluating the quality of sub-hypergraphs for this back-in-time hypergraph sampling problem.
+We provide source code for (1) sampling hypergraphs, (2) evaluating the quality of sub-hypergraphs for this back-in-time hypergraph sampling problem, and (3) visualizing results.
 
 
 (1) **Sampling Hypergraphs**
 
-* *Simple and Intuitive Approaches* : six intuitive approaches(RNS, RDN, RW, FF, ONS, RHS, and TIHS) experimenting on 11 datasets
-* *MiDaS* : a preliminary version of MiDaS which can improve the limitations of intuitive approaches by proper alpha setting
-* *MiDaS-B*: a full-fledged version which can automatically tune alpha
+* *Simple and Intuitive Approaches* : seven intuitive approaches(RNS, RDN, RW, FF, ONS, RHS, and TIHS) experimenting on 11 datasets
+* *MiDaS* : a sampling method initially proposed for representative hypergraph sampling which allows for control over biases towards high-degree nodes through the parameter alpha
+* *MiDaS-B*: an extension of MiDaS designed explicitly for back-in-time hypergraph sampling which incorporates a hyperedge-size-related term into the hyperedge sampling probabilities, effectively controlling associated biases
 
 (2) **Evaluating the Quality of Sub-Hypergraph**
 
-Measure how precisely the sub-hypergraph preserves the structural properties of the ground-truth hypergraph with respect to,
+Measure how precisely the sub-hypergraph preserves the structural properties of the ground-truth past snapshot of the original hypergraph with respect to,
 
 * *node-level statistics*: the distributions of node degrees and node-pair degrees
 * *hyperedge-level statistics* : the distributions of hyperedge sizes and intersection sizes
 * *graph-level statistics* : average clustering coefficient, density, overlapness, and effective diameter
 
+
+(3) **Result Visualization**
+
+Provide how to generate figures that illustrate 10 properties of the sub-hypergraphs obtained from different sampling approaches
+
 - - -
 
 ## Datasets
 
-In the paper, we used datasets after removing duplicated hyperedges. We preprocessed eleven datasets collected by [Austin R. Benson](https://www.cs.cornell.edu/~arb/data/). The datasets used in the paper are available in the ["dataset" folder](https://github.com/young917/MiDaS/tree/main/dataset).
+In the paper, we used datasets after removing duplicated hyperedges. We preprocessed eleven datasets collected by [Austin R. Benson](https://www.cs.cornell.edu/~arb/data/). The datasets used in the paper are available in the ["dataset" folder](https://github.com/young917/MiDaS/tree/main/dataset)
 
 - - -
 
 ## How to Run
 
-### Example
+Before you proceed with running the code, please ensure that you have compiled it using the `make` command
 
-You can run all thirteen sampling algorithms including MiDaS by
+You can execute the following scripts:
 
-```
-make clean
-make
-./run_sampling.sh
-```
+* **All Baseline Sampling Methods**: Use [run_baseline.sh](https://github.com/young917/MiDaS-B/blob/main/run/run_baseline.sh) to run all seven baseline sampling methods
 
-### Sampling
+* **MiDaS w/o. Oracle**: Execute [run_midas.sh](https://github.com/young917/MiDaS-B/blob/main/run/run_midas.sh) to run MiDaS without utilizing an Oracle
 
-* src/main.cpp
-after `make`, type `./bin/Sampling arguments`
+* **MiDaS w. Oracle**: Utilize [run_midas_oracle.sh](https://github.com/young917/MiDaS-B/blob/main/run/run_midas_oracle.sh) to run MiDaS with Oracle support
 
-```
-required arguments:
-  --algorithm ALGORITHM       --algo_opt  ALGORITHMOPTION: choose one of the below
-              es                          [ global_deg_min / global_deg_max / global_deg_avg ]: for MiDaS_Basic or Random Hyperedge Sampling(RHS) / MiDaS_Basic_Max / MiDaS_Basic_Avg
-              ns                          [ global_deg ]: for Random Node Sampling(RNS) and Random Degree Node(RDN)
-              rw                          [ rw_c ]: for RandomWalk(RW)
-              ff                          [ ff_c ]: for ForestFire(FF)
-              mgs                         [ add / exchange / remove ]: for Metropolis Graph Sampling Add / Replace / Delete
-              answer                      [ - ]: compute properties of dataset (Degree, Size, Pair Degree, Int. Size, SV, CC, GCC, Density, Overlapness, Diameter)
-              find_skewness               [ - ]: compute skewness of the degree distribution of dataset
-              test_dynamic                [ - ]: test code for dynamic updating the distributions of node degrees, hyperedge sizes, node-pair degrees, hyperedge-pair intersection sizes
-              adjust_time                 [ - ]: calculate the additional elapsed time for computing the D-Statistics in degree distributions
-              cal_phi_dist                [ - ]: observe theorem 2
-  --dataname DATA: dataset file name
-  --inputpath INPUTPATH: path for the directory of the dataset
-  --target_portion PORTION: sampling portion
-  --eval_opt EVAL: [degree/avg] When running mgs, choose degree if you aim to preserve node degrees. On the other hand, choose avg if you aim to 
-                                preserve node degrees, hyperedge sizes, node-pair degrees and hyperedge intersection sizes at the same time.
-  --repeat REPEAT: the order of repeating
-```
-```
-optional arguments depending on ALGORITHM:
-  ALGORITHM
-  es or ns      --alpha ALPHA: the degree of bias towards those with high-degree nodes
-  mgs           --turn TURN: the number of iterations for MGS-DT
-  rw            --maxlength MAXLENGTH --restart RESTART: MAXLENGTH for the maximum number of steps and RESTART for restart probability
-  ff            --p P --q Q: p and q for the parameters same in HyperFF
-  test_dynamic  --num_tries NUMTRIES: the number of iterations
-```
+* **MiDaS-B**: For our proposed method, MiDaS-B, execute [run_midasB.sh](https://github.com/young917/MiDaS-B/blob/main/run/run_midasB.sh)
 
-* MiDaS
+* **MiDaS-B w. Oracle**: If you wish to run MiDaS-B with Oracle, use [run_midasB_oracle.sh](https://github.com/young917/MiDaS-B/blob/main/run/run_midasB_oracle.sh)
+
+These scripts offer a convenient way to execute the sampling code and evaluate the output at once
+ 
+### Evaluation
+
+Before evaluating sampling methods, compute 10 properties of the ground-truth past snapshot of the original hypergraph by following [run_answer_analysis.sh](https://github.com/young917/MiDaS-B/blob/main/run/run_answer_analysis.sh)
 
 ```
-cd analyze
-python midas.py --data DATA --portion SAMPLINGPORTION
-```
+# Density, CC, GCC
+./bin/Sampling --dataname [dataname] --inputpath ../dataset/ --algorithm helper --inputdir [target_algo] --algo_opt "intersection,densification,sizewcc,clusteringcoef" --accuracy 100 --repeat [1,2,3]
 
-### Find Properties
+# Degree, Int.Size, Pair Degree, Size Dist.
+./bin/Sampling --dataname [dataname] --inputpath ../dataset/ --algorithm helperdist --inputdir [target_algo]  --samplingportion [0.1,0.3,0.5,0.7,0.9] --repeat [1,2,3]
 
-After running `main.cpp`, properties of the sampled hypergraphs are already saved in the directory except for overlapness, singular values and diameter. Thus, we find remaining properties of the sampled hypergraphs and then calculate distances from the entire hypergraph with respect to ten properties.
+# Diameter, Overlapness
+cd src
+python calculation_helper.py --dataset [dataname] --algorithm [target_algo] --effdiam --overlapness --repeat [1,2,3] --accuracy 100
 
-* analyze_sv.py
+# SV
+# For threads-ask-ubuntu, coauth-MAG-Geology-full, and coauth-MAG-History-full, 
+# run  `src/preprocess_sv.py --dataname [dataname] --algoname [target_algo] --repeat_str [1,2,3]` 
+# and then run `run_sv_midas_oracle.m` before the next line
 
-```
-python analyze.py
-default setting:
-  find singular values in all results from seventeen sampling methods(including ablation study) in multiple settings(eleven datasets and five sampling portions)
-```
-```
-arguments:
-  --repeat_str REPEATLIST: pass REPEATLIST where indexes are separated by "," if you want to consider *only* results from these repeat indexes. (eg. "1,2,3")
-  --portion_str PORTIONLIST: pass PORTIONLIST where sampling portions are separated by "," if you want to consider *only* these portions. (eg. "0.30,0.20")
-  --dataname DATALIST: pass DATALIST where datasets are separated by "," if you want to consider *only* sampled hypergraphs from these datasets. (eg. "email-Eu-full,coauth-MAG-Geology-full")
-  --algoname ALGORITHMLIST: pass ALGORITHMLIST where algorithms are separated by "," if you want to consider *only* results from these algorithms. (eg. "midas,tihs")
-```
-
-For large datasets (threads and coauth domain), run `preprocess_sv.py` and use matlab to find singularvalues fast(refer to `script_for_sv_geology.m`)
-
-* helper.py
+cd src
+python calculation_helper.py --dataset [dataname] --algorithm [target_algo] --svdist --samplingportion [0.1,0.3,0.5,0.7,0.9] --repeat [1,2,3]
 
 ```
-python helper.py --overlapness --diameter # find overlapness and diameter of the sampled hypergraphs
-python helper.py --get_eval # calculate D-Statistics and relative difference
-python helper.py --repeat_agg # average of repetition
-```
-```
-default setting:
-  run over all results from seventeen sampling methods(including ablation study) in multiple settings(eleven datasets and five sampling portions)
-```
-```
-arguments:
-  --inputpath DIRPATH: use if you want to consider *only* results in this directory
-  --dataname DATANAME: use if you want to consider *only* sampled hypergraphs from this dataset
-  --algorithmlist ALGORITHMLIST: pass ALGORITHMLIST where algorithms are separated by "," if you want to consider *only* results from these algorithms. (eg. "midas,tihs")
-  --portion PORTIONLIST: pass PORTIONLIST where sampling portions are separated by "," if you want to consider *only* results from these portions. (eg. "0.30,0.20")
-```
-- - -
 
-## Environment
+After computing all 10 properties of the sampling results, run `analyze/evaluation_table.py --search_name [baseline,final,ablation] --repeat "1,2,3"`
 
-The environment of running codes is specified in `environment.yml`
+
+### Visualization
+
+You can replicate the table displaying the performance of various sampling methods across 11 datasets, considering 10 properties and 5 distinct sampling portions. 
+To do so, you can refer to the [Performance.ipynb](https://github.com/young917/MiDaS-B/blob/main/analyze/Performance.ipynb)
+
+Furthermore, engage in a detailed comparison of the properties exhibited by sub-hypergraphs generated by different sampling methods. This comparison is available in the [PlotDistribution.ipynb](https://github.com/young917/MiDaS-B/blob/main/analyze/PlotDistribution.ipynb)
+
