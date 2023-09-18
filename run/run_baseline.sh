@@ -1,11 +1,8 @@
-# dataset=("email-Enron-full" "email-Eu-full" "contact-high-school" "contact-primary-school" "NDC-classes-full" "NDC-substances-full" "tags-ask-ubuntu" "tags-math-sx" "threads-ask-ubuntu" "coauth-MAG-Geology-full" "coauth-MAG-History-full")
+dataset=("email-Enron-full" "email-Eu-full" "contact-high-school" "contact-primary-school" "NDC-classes-full" "NDC-substances-full" "tags-ask-ubuntu" "tags-math-sx" "threads-ask-ubuntu" "coauth-MAG-Geology-full" "coauth-MAG-History-full")
 spset=("0.1" "0.3" "0.5" "0.7" "0.9")
 
-dataset=("email-Eu-full" "contact-primary-school" "NDC-substances-full" "tags-ask-ubuntu") # "coauth-MAG-History-full")
-
 cd ../
-# for repeat_index in 1 2 3
-for repeat_index in 1
+for repeat_index in 1 2 3
 do
     for data in ${dataset[@]}
     do
