@@ -10,9 +10,6 @@ dataset = [
     "tags-ask-ubuntu", "tags-math-sx",
     "threads-ask-ubuntu", "coauth-MAG-History-full", "coauth-MAG-Geology-full"
 ]
-dataset = [
-    "email-Eu-full", "contact-primary-school", "NDC-substances-full",
-    "tags-ask-ubuntu", "coauth-MAG-History-full"]
 repeatset = range(1,4)
 ASS = ["0.0000", "0.2500", "0.5000", "1.0000", "2.0000"]
 
