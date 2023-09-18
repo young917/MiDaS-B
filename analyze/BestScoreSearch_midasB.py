@@ -10,14 +10,10 @@ dataset = [
     "tags-ask-ubuntu", "tags-math-sx",
     "threads-ask-ubuntu", "coauth-MAG-History-full", "coauth-MAG-Geology-full"
 ]
-dataset = [
-    "email-Eu-full", "contact-primary-school", "NDC-substances-full",
-    "tags-ask-ubuntu", "coauth-MAG-History-full"]
 ASS = ["0.00", "0.25", "0.50", "1.00", "2.00"]
 BSS = ["-1.00", "-0.50", "-0.25", "0.00", "0.25", "0.50", "1.00"]
 
-# repeat = [1,2,3]
-repeat = [1]
+repeat = [1,2,3]
 
 data2bestalgo = defaultdict()
 
