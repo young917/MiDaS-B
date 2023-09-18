@@ -53,8 +53,6 @@ dataset = ["email-Enron-full", "email-Eu-full",
            "contact-high-school", "contact-primary-school",
           "NDC-classes-full", "NDC-substances-full", "tags-ask-ubuntu", "tags-math-sx", 
            "threads-ask-ubuntu", "coauth-MAG-History-full", "coauth-MAG-Geology-full"]
-dataset = ["email-Eu-full", "contact-primary-school",
-            "NDC-substances-full", "tags-ask-ubuntu"]
 
 # --------------------------------------------------------------------------------------------------------
 def get_dist(dirpath, portion):
